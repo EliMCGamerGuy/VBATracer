@@ -3,13 +3,12 @@ Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form Window 
    Caption         =   "Window"
    ClientHeight    =   11400
-   ClientLeft      =   60
-   ClientTop       =   345
+   ClientLeft      =   4425
+   ClientTop       =   2085
    ClientWidth     =   10845
    LinkTopic       =   "Form1"
    ScaleHeight     =   11400
    ScaleWidth      =   10845
-   StartUpPosition =   3  'Windows Default
    Begin MSComctlLib.ProgressBar renderProgress 
       Height          =   135
       Left            =   0

@@ -16,85 +16,54 @@ Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Member0" ,"vec3"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 'local variable(s) to hold property value(s)
-Private mvarx As Variant 'local copy
-Private mvary As Variant 'local copy
-Private mvarz As Variant 'local copy
-Public Property Let z(ByVal vData As Variant)
+Private mvarx As Double 'local copy
+Private mvary As Double 'local copy
+Private mvarz As Double 'local copy
+Public Property Let z(ByVal vData As Double)
 'used when assigning a value to the property, on the left side of an assignment.
 'Syntax: X.z = 5
     mvarz = vData
 End Property
 
-
-Public Property Set z(ByVal vData As Variant)
-'used when assigning an Object to the property, on the left side of a Set statement.
-'Syntax: Set x.z = Form1
-    Set mvarz = vData
-End Property
-
-
-Public Property Get z() As Variant
+Public Property Get z() As Double
 'used when retrieving value of a property, on the right side of an assignment.
 'Syntax: Debug.Print X.z
-    If IsObject(mvarz) Then
-        Set z = mvarz
-    Else
-        z = mvarz
-    End If
+    z = mvarz
 End Property
 
 
 
-Public Property Let y(ByVal vData As Variant)
+Public Property Let y(ByVal vData As Double)
 'used when assigning a value to the property, on the left side of an assignment.
 'Syntax: X.y = 5
     mvary = vData
 End Property
 
 
-Public Property Set y(ByVal vData As Variant)
-'used when assigning an Object to the property, on the left side of a Set statement.
-'Syntax: Set x.y = Form1
-    Set mvary = vData
-End Property
-
-
-Public Property Get y() As Variant
+Public Property Get y() As Double
 'used when retrieving value of a property, on the right side of an assignment.
 'Syntax: Debug.Print X.y
-    If IsObject(mvary) Then
-        Set y = mvary
-    Else
         y = mvary
-    End If
 End Property
 
 
 
-Public Property Let x(ByVal vData As Variant)
+Public Property Let x(ByVal vData As Double)
 'used when assigning a value to the property, on the left side of an assignment.
 'Syntax: X.x = 5
     mvarx = vData
 End Property
 
 
-Public Property Set x(ByVal vData As Variant)
-'used when assigning an Object to the property, on the left side of a Set statement.
-'Syntax: Set x.x = Form1
-    Set mvarx = vData
-End Property
-
-
-Public Property Get x() As Variant
+Public Property Get x() As Double
 'used when retrieving value of a property, on the right side of an assignment.
 'Syntax: Debug.Print X.x
-    If IsObject(mvarx) Then
-        Set x = mvarx
-    Else
-        x = mvarx
-    End If
+    x = mvarx
 End Property
 
+
+
+' When used as a color, this converts to RGB with optional dither.
 Public Function convToRGB(Optional enableDither As Variant = False, Optional scrnX As Integer = 0, Optional scrnY As Integer = 0) As Long
     tempr = Me.x
     tempg = Me.y
@@ -134,7 +103,9 @@ Public Function convToRGB(Optional enableDither As Variant = False, Optional scr
     convToRGB = RGB(tempr, tempg, tempb)
 End Function
 
-' For dithering.
+
+
+' Bayer dithering lookup function.
 Private Function bayer(lookupX As Integer, lookupY As Integer) As Integer
     Dim bayerlookup(4, 4) As Integer
     
@@ -163,7 +134,9 @@ Private Function bayer(lookupX As Integer, lookupY As Integer) As Integer
     bayer = bayerlookup(lookupX, lookupY)
 End Function
 
-' return bigger
+
+
+' Return the larger value.
 Private Function Max(val1, val2)
     If val1 > val2 Then
         Max = val1
@@ -172,7 +145,9 @@ Private Function Max(val1, val2)
     End If
 End Function
 
-' return smaller
+
+
+' Return the smaller value.
 Private Function Min(val1, val2)
     If val1 < val2 Then
         Min = val1
@@ -180,3 +155,101 @@ Private Function Min(val1, val2)
         Min = val2
     End If
 End Function
+
+
+
+' Add two vec3s together.
+Public Function addvec(v As vec3) As vec3
+    Dim temp As New vec3
+    temp.x = Me.x + v.x
+    temp.y = Me.y + v.y
+    temp.z = Me.z + v.z
+    Set addvec = temp
+End Function
+
+
+
+' Subtract two vec3s.
+Public Function subvec(v As vec3) As vec3
+    Dim temp As New vec3
+    temp.x = Me.x - v.x
+    temp.y = Me.y - v.y
+    temp.z = Me.z - v.z
+    Set subvec = temp
+End Function
+
+
+
+' Multiply a vec3 by a single number.
+Public Function mul(t As Double) As vec3
+    Dim temp As New vec3
+    temp.x = Me.x * t
+    temp.y = Me.y * t
+    temp.z = Me.z * t
+    Set mul = temp
+End Function
+
+
+
+' Divide a vec3 by a single number.
+Public Function div(t As Double) As vec3
+    Dim temp As New vec3
+    Set temp = Me.mul(1 / t)
+    Set div = temp
+End Function
+
+
+
+' Return the dot product of two vec3s.
+Public Function dot(v As vec3) As Double
+    dot = (Me.x * v.x) + (Me.y * v.y) + (Me.z * v.z)
+End Function
+
+
+
+' Length^2 is literally just the dot product of the vector
+' and itself.
+Public Function length_squared() As Double
+    length_squared = Me.dot(Me)
+End Function
+
+
+
+' Length is the square root of length squared. It's not hard to
+' understand.
+Public Function length() As Double
+    length = Sqr(Me.length_squared())
+End Function
+
+
+
+' Me Div() on Me Length()!
+' Normalize. Theoretically the longest-running funct here.
+' Also known as unit_vector().
+' This places all the vec3s values between -1 to 1.
+Public Function normalize() As vec3
+    Set normalize = Me.div(Me.length())
+End Function
+
+
+
+' Cross?
+Public Function crossvec(v As vec3) As vec3
+    Dim temp As New vec3
+    temp.x = Me.y * v.z - Me.z * v.y
+    temp.y = Me.z * v.x - Me.x * v.z
+    temp.z = Me.x * v.y - Me.y * v.x
+    Set crossvec = temp
+End Function
+
+
+
+' Multiply two vec3s.
+Public Function mulvec(v As vec3) As vec3
+    Dim temp As New vec3
+    temp.x = Me.x * v.x
+    temp.y = Me.y * v.y
+    temp.z = Me.z * v.z
+    Set mulvec = temp
+End Function
+
