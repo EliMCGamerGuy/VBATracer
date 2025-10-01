@@ -21,6 +21,7 @@ Private Function ray_color(r As ray) As vec3
     
     a = 0.5 * (unit_dir.y + 1#)
     Set ray_color = vec3(1#, 1#, 1#).mul(1# - a).addvec(vec3(0.5, 0.7, 1#).mul(CDbl(a)))
+    ' FOR THE LOVE OF WHAT THE HECK IS THATT
 End Function
 
 
