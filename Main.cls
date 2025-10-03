@@ -20,18 +20,19 @@ Private Function ray_color(r As ray) As vec3
     
     
     a = 0.5 * (unit_dir.y + 1#)
-    Set ray_color = vec3(1#, 1#, 1#).mul(1# - a).addvec(vec3(0.5, 0.7, 1#).mul(CDbl(a)))
-    ' FOR THE LOVE OF WHAT THE HECK IS THATT
+    Set ray_color = vecAddVec(vecMul(vec3(1#, 1#, 1#), (1# - a)), vecMul(vec3(0.5, 0.7, 1#), a))
+    ' vec3(1,1,1) * (1.0 - a) + vec3(0.5,0.7,1) * a
+    ' it's a little sloppy but it works
 End Function
 
 
 
 ' "We have int main() at home"
 Private Sub Class_Initialize()
-    aspect = 16 / 9
-    image_width = 128
+    aspect = 15# / 9#
+    image_width = 400
     
-    ' Get image height based on aspect, and make sure it's >0
+    ' Get image height based on aspect, and make sure it's >= 1
     Dim image_height As Integer
     image_height = Int(image_width / aspect)
     image_height = Max(image_height, 1)
@@ -45,8 +46,8 @@ Private Sub Class_Initialize()
     ' Camera Settings
     
     focal_length = 1#
-    viewport_width = 2#
-    viewport_height = viewport_width * (image_width / image_height)
+    viewport_height = 2#
+    viewport_width = viewport_height * (image_width / image_height)
     Dim camera_center As New vec3
     Set camera_center = point3(0, 0, 0)
     
@@ -54,26 +55,25 @@ Private Sub Class_Initialize()
     ' Calculate vectors across horizontal and down vertical viewport sides.
     Dim viewport_u As New vec3
     Dim viewport_v As New vec3
-    Set viewport_u = vec3(CDbl(viewport_width), 0, 0)
-    Set viewport_v = vec3(0, CDbl(-viewport_height), 0)
+    Set viewport_u = vec3(viewport_width, 0, 0)
+    Set viewport_v = vec3(0, -viewport_height, 0)
     
     
     ' Calculate the horizontal and vertical delta vectors from pix to pix.
     Dim pixel_delta_u As New vec3
     Dim pixel_delta_v As New vec3
-    Set pixel_delta_u = viewport_u.div(CDbl(image_width))
-    Set pixel_delta_v = viewport_v.div(CDbl(image_height))
+    Set pixel_delta_u = vecDiv(viewport_u, image_width)
+    Set pixel_delta_v = vecDiv(viewport_v, image_height)
     
     
     ' Calculate the point3 location of the upper left pix.
     ' Are you ready?
     Dim viewport_ul As New vec3
     Dim pix00_loc As New vec3
-    Set viewport_ul = camera_center.subvec(vec3(0, 0, CDbl(focal_lenth)).subvec(viewport_u.div(2)).subvec(viewport_v.div(2)))
-    Set pix00_loc = viewport_ul.addvec(pixel_delta_u.addvec(pixel_delta_v).mul(0.5))
-    ' WHAT EVEN
-    ' THIS IS WORSE THAN SMILEBASIC
-    ' I DO NOT UNDERSTAND THIS ENOUGH TO UNTANGLE THIS
+    Set viewport_ul = vecSubVec(vecSubVec(camera_center, vec3(0, 0, focal_length)), vecSubVec(vecDiv(viewport_u, 2), vecDiv(viewport_v, 2)))
+    ' viewport_ul = camera_center - vec3(0,0,focal_length) - viewport_u/2 - viewport_v/2
+    Set pix00_loc = vecAddVec(viewport_ul, vecMul(vecAddVec(pixel_delta_u, pixel_delta_v), 0.5))
+    ' pix00_loc = viewport_ul + (pixel_delta_u + pixel_delta_v) * 0.5
     
     
     ' Render!
@@ -87,11 +87,12 @@ Private Sub Class_Initialize()
     
     For j = 0 To image_height ' For every pixel
         For i = 0 To image_width
-            ' black magic i can't comment on
-            Set pix_center = pix00_loc.addvec(pixel_delta_u.mul(CDbl(i)).addvec(pixel_delta_v.mul(CDbl(j))))
+        
+            Set pix_center = vecAddVec(pix00_loc, vecAddVec(vecMul(pixel_delta_u, i), vecMul(pixel_delta_u, j)))
+            ' pix_center = pix00_loc + (pixel_delta_u * i) + (pixel_delta_v * j)
             
             ' ray direction is the pixel's center minus the camera center, giving us dir
-            Set ray_dir = pix_center.subvec(camera_center)
+            Set ray_dir = vecSubVec(pix_center, camera_center)
             Set r = ray(camera_center, ray_dir) ' MAKE! THE! RAY!
             
             ' get color from ray
@@ -113,7 +114,7 @@ Private Sub Class_Initialize()
         Next i
     Next j
     
-    
+    ' Visually show the progressbar as full when done rendering
     Window.renderProgress.Value = Window.renderProgress.Max
 End Sub
 
@@ -141,11 +142,11 @@ End Function
 
 
 
-Private Function vec3(x As Double, y As Double, z As Double) As vec3
+Private Function vec3(x, y, z) As vec3
     Dim temp As New vec3
-    temp.x = x
-    temp.y = y
-    temp.z = z
+    temp.x = CDbl(x)
+    temp.y = CDbl(y)
+    temp.z = CDbl(z)
     Set vec3 = temp
 End Function
 
@@ -166,4 +167,40 @@ Private Function ray(origin As vec3, dir As vec3) As ray
     Set temp.origin = origin
     Set temp.direction = dir
     Set ray = temp
+End Function
+
+
+
+Private Function vecAddVec(v1 As vec3, v2 As vec3) As vec3
+    Set vecAddVec = v1.addvec(v2)
+End Function
+
+
+
+Private Function vecSubVec(v1 As vec3, v2 As vec3) As vec3
+    Set vecSubVec = v1.subvec(v2)
+End Function
+
+
+
+Private Function vecMul(v1 As vec3, t) As vec3
+    Set vecMul = v1.mul(CDbl(t))
+End Function
+
+
+
+Private Function vecDiv(v1 As vec3, t) As vec3
+    Set vecDiv = v1.div(CDbl(t))
+End Function
+
+
+
+Private Function vecDot(v1 As vec3, v2 As vec3) As Double
+    vecDot = v1.dot(v2)
+End Function
+
+
+
+Private Function vecMulVec(v1 As vec3, v2 As vec3) As vec3
+    Set vecMulVec = v1.mulvec(v2)
 End Function

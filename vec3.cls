@@ -79,7 +79,7 @@ Public Function convToRGB(Optional enableDither As Variant = False, Optional scr
         dither = bayer(indexX, indexY)
         
         ' Magic numbers!
-        threshold = (dither - 0.5) / 128 ' / 45
+        threshold = (dither - 0.5) / 45 '128 ' / 45
         
         ' apply dither!
         tempr = tempr + threshold
@@ -131,7 +131,7 @@ Private Function bayer(lookupX As Integer, lookupY As Integer) As Integer
     bayerlookup(3, 2) = 13
     bayerlookup(3, 3) = 5
         
-    bayer = bayerlookup(lookupX, lookupY)
+    bayer = bayerlookup(lookupX, lookupY) / 16
 End Function
 
 
