@@ -13,7 +13,25 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
+Private Function hit_sphere(center As vec3, radius, r As ray) As Boolean
+    Dim oc As New vec3
+    Set oc = vecSubVec(center, r.origin)
+    
+    a = vecDot(r.direction, r.direction)
+    b = -2# * vecDot(r.direction, oc)
+    c = vecDot(oc, oc) - radius * radius
+    discriminant = b * b - 4 * a * c
+    hit_sphere = (discriminant >= 0)
+End Function
+
+
+
 Private Function ray_color(r As ray) As vec3
+    If (hit_sphere(vec3(0, 0, -1), 0.5, r)) Then
+        Set ray_color = vec3(1, 0, 0)
+        Exit Function
+    End If
+    
     ' Let's make a little gradient!
     Dim unit_dir As New vec3
     Set unit_dir = r.direction.normalize()
