@@ -16,7 +16,8 @@ Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 'local variable(s) to hold property value(s)
 Private mvarorigin As vec3 'local copy
 Private mvardirection As vec3 'local copy
-Public Function at(t As Double) As vec3
+Public Function at(t) As vec3
+    Set at = vecAddVec(Me.origin, vecMul(Me.direction, CDbl(t)))
 End Function
 
 Public Property Set direction(ByVal vData As vec3)
@@ -67,6 +68,42 @@ Private Function Min(val1, val2)
     Else
         Min = val2
     End If
+End Function
+
+
+
+Private Function vecAddVec(v1 As vec3, v2 As vec3) As vec3
+    Set vecAddVec = v1.addvec(v2)
+End Function
+
+
+
+Private Function vecSubVec(v1 As vec3, v2 As vec3) As vec3
+    Set vecSubVec = v1.subvec(v2)
+End Function
+
+
+
+Private Function vecMul(v1 As vec3, t) As vec3
+    Set vecMul = v1.mul(CDbl(t))
+End Function
+
+
+
+Private Function vecDiv(v1 As vec3, t) As vec3
+    Set vecDiv = v1.div(CDbl(t))
+End Function
+
+
+
+Private Function vecDot(v1 As vec3, v2 As vec3) As Double
+    vecDot = v1.dot(v2)
+End Function
+
+
+
+Private Function vecMulVec(v1 As vec3, v2 As vec3) As vec3
+    Set vecMulVec = v1.mulvec(v2)
 End Function
 
 
