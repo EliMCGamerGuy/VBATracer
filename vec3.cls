@@ -65,6 +65,7 @@ End Property
 
 ' When used as a color, this converts to RGB with optional dither.
 Public Function convToRGB(Optional enableDither As Variant = False, Optional scrnX As Integer = 0, Optional scrnY As Integer = 0) As Long
+
     tempr = Me.x
     tempg = Me.y
     tempb = Me.z
@@ -79,7 +80,7 @@ Public Function convToRGB(Optional enableDither As Variant = False, Optional scr
         dither = bayer(indexX, indexY)
         
         ' Magic numbers!
-        threshold = (dither - 0.5) / 45 '128 ' / 45
+        threshold = (dither - 0.5) / 45 '128
         
         ' apply dither!
         tempr = tempr + threshold
@@ -88,9 +89,9 @@ Public Function convToRGB(Optional enableDither As Variant = False, Optional scr
         
     End If
     
-    tempr = 255.999 * tempr
-    tempg = 255.999 * tempg
-    tempb = 255.999 * tempb
+    tempr = 255 * tempr
+    tempg = 255 * tempg
+    tempb = 255 * tempb
     
     tempr = Min(tempr, 255)
     tempg = Min(tempg, 255)
@@ -194,7 +195,7 @@ End Function
 ' Divide a vec3 by a single number.
 Public Function div(t As Double) As vec3
     Dim temp As New vec3
-    Set temp = Me.mul(1 / t)
+    Set temp = Me.mul(1# / t)
     Set div = temp
 End Function
 

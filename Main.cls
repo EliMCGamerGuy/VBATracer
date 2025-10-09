@@ -18,9 +18,13 @@ Private Function ray_color(r As ray) As vec3
     Dim unit_dir As New vec3
     Set unit_dir = r.direction.normalize()
     
+    'Debug.Print "r pos x" & CStr(r.origin.x) & " y" & CStr(r.origin.y) & " z" & CStr(r.origin.z)
+    'Debug.Print "r dir x" & CStr(r.direction.x) & " y" & CStr(r.direction.y) & " z" & CStr(r.direction.z)
+    'Debug.Print "unit dir x" & CStr(unit_dir.x) & " y" & CStr(unit_dir.y) & " z" & CStr(unit_dir.z)
     
-    a = 0.5 * (unit_dir.y + 1#)
-    Set ray_color = vecAddVec(vecMul(vec3(1#, 1#, 1#), (1# - a)), vecMul(vec3(0.5, 0.7, 1#), a))
+    
+    a = 0.5 * (unit_dir.y + 1)
+    Set ray_color = vecAddVec(vecMul(vec3(1, 1, 1), (1 - a)), vecMul(vec3(0.5, 0.7, 1), a))
     ' vec3(1,1,1) * (1.0 - a) + vec3(0.5,0.7,1) * a
     ' it's a little sloppy but it works
 End Function
@@ -29,13 +33,16 @@ End Function
 
 ' "We have int main() at home"
 Private Sub Class_Initialize()
-    aspect = 15# / 9#
+    aspect = 15 / 9
     image_width = 400
     
     ' Get image height based on aspect, and make sure it's >= 1
     Dim image_height As Integer
     image_height = Int(image_width / aspect)
     image_height = Max(image_height, 1)
+    
+    Window.paintBox.Width = image_width * 15
+    Window.paintBox.Height = image_height * 15
     
     ' Makes the progress bar work, ignore.
     ' Requires image_width and image_height to work.
@@ -45,8 +52,8 @@ Private Sub Class_Initialize()
     
     ' Camera Settings
     
-    focal_length = 1#
-    viewport_height = 2#
+    focal_length = 1
+    viewport_height = 2
     viewport_width = viewport_height * (image_width / image_height)
     Dim camera_center As New vec3
     Set camera_center = point3(0, 0, 0)
@@ -70,7 +77,7 @@ Private Sub Class_Initialize()
     ' Are you ready?
     Dim viewport_ul As New vec3
     Dim pix00_loc As New vec3
-    Set viewport_ul = vecSubVec(vecSubVec(camera_center, vec3(0, 0, focal_length)), vecSubVec(vecDiv(viewport_u, 2), vecDiv(viewport_v, 2)))
+    Set viewport_ul = vecSubVec(vecSubVec(vecSubVec(camera_center, vec3(0, 0, focal_length)), vecDiv(viewport_u, 2)), vecDiv(viewport_v, 2))
     ' viewport_ul = camera_center - vec3(0,0,focal_length) - viewport_u/2 - viewport_v/2
     Set pix00_loc = vecAddVec(viewport_ul, vecMul(vecAddVec(pixel_delta_u, pixel_delta_v), 0.5))
     ' pix00_loc = viewport_ul + (pixel_delta_u + pixel_delta_v) * 0.5
@@ -85,10 +92,10 @@ Private Sub Class_Initialize()
     Dim r As New ray
     
     
-    For j = 0 To image_height ' For every pixel
-        For i = 0 To image_width
+    For j = 0 To image_height - 1 ' For every pixel
+        For i = 0 To image_width - 1
         
-            Set pix_center = vecAddVec(pix00_loc, vecAddVec(vecMul(pixel_delta_u, i), vecMul(pixel_delta_u, j)))
+            Set pix_center = vecAddVec(pix00_loc, vecAddVec(vecMul(pixel_delta_u, i), vecMul(pixel_delta_v, j)))
             ' pix_center = pix00_loc + (pixel_delta_u * i) + (pixel_delta_v * j)
             
             ' ray direction is the pixel's center minus the camera center, giving us dir
@@ -107,7 +114,7 @@ Private Sub Class_Initialize()
             
             
             ' Paint the pixel to the render box.
-            Window.drawPixel i, j, pixelColor.convToRGB(False, Int(i), Int(j))
+            Window.drawPixel i, j, (pixelColor.convToRGB(True, Int(i), Int(j))) ' / 2
             
             ' Quality of life progressbar. Shows render progress.
             Window.renderProgress.Value = Window.renderProgress.Value + 1
@@ -203,4 +210,14 @@ End Function
 
 Private Function vecMulVec(v1 As vec3, v2 As vec3) As vec3
     Set vecMulVec = v1.mulvec(v2)
+End Function
+
+
+
+Private Function gamma2(color As Double)
+    'gamma2 = Sqr(color) ' Gamma 2.0? What? I dunno.
+    
+    ' what would happen if i just multiplied by a fraction?
+    
+    gamma2 = color * 0.75
 End Function

@@ -32,13 +32,13 @@ Begin VB.Form Window
       BackColor       =   &H80000004&
       ClipControls    =   0   'False
       ForeColor       =   &H80000008&
-      Height          =   11220
-      Left            =   0
-      ScaleHeight     =   11190
-      ScaleWidth      =   10785
+      Height          =   5940
+      Left            =   120
+      ScaleHeight     =   5910
+      ScaleWidth      =   6465
       TabIndex        =   0
-      Top             =   140
-      Width           =   10815
+      Top             =   240
+      Width           =   6495
    End
 End
 Attribute VB_Name = "Window"
@@ -66,6 +66,6 @@ End Sub
 
 Private Sub Timer1_Timer()
     Timer1.Enabled = False
-    Dim thisMain As main
-    Set thisMain = New main
+    Dim thisMain As Main
+    Set thisMain = New Main
 End Sub
