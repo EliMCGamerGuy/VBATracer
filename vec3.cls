@@ -80,7 +80,10 @@ Public Function convToRGB(Optional enableDither As Variant = False, Optional scr
         dither = bayer(indexX, indexY)
         
         ' Magic numbers!
+        Dim threshold As Double
         threshold = (dither - 0.5) / 45 '128
+        
+        'Debug.Print threshold
         
         ' apply dither!
         tempr = tempr + threshold
@@ -107,7 +110,7 @@ End Function
 
 
 ' Bayer dithering lookup function.
-Private Function bayer(lookupX As Integer, lookupY As Integer) As Integer
+Private Function bayer(lookupX As Integer, lookupY As Integer) As Double
     Dim bayerlookup(4, 4) As Integer
     
     bayerlookup(0, 0) = 0
