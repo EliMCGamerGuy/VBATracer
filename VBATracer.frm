@@ -66,6 +66,12 @@ End Sub
 
 Private Sub Timer1_Timer()
     Timer1.Enabled = False
-    Dim thisMain As Main
-    Set thisMain = New Main
+    Dim thisMain As New main
+    
+    thisMain.main
+    'thisMain.branchlessMaxProfiler
 End Sub
+
+
+
+

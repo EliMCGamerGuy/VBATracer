@@ -13,34 +13,41 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
-Private Function hit_sphere(center As vec3, radius, r As ray) As Double
-    Dim oc As New vec3
-    Set oc = vecSubVec(center, r.origin)
-    
-    a = vecDot(r.direction, r.direction)
-    b = -2# * vecDot(r.direction, oc)
-    c = vecDot(oc, oc) - radius * radius
-    discriminant = b * b - 4 * a * c
-    
-    ' WHAT ARE WE EVEN RETURNING ANYMORE
-    If discriminant < 0 Then
-        hit_sphere = -1#
-    Else
-        hit_sphere = (-b - Sqr(CDbl(discriminant))) / (2# * a)
-    End If
-End Function
+Attribute VB_Ext_KEY = "Member0" ,"main"
+'Private Function hit_sphere(center As vec3, radius, r As ray) As Double
+'    Dim oc As New vec3
+'    Set oc = vecSubVec(center, r.origin)
+'
+'    a = vecDot(r.direction, r.direction)
+'    h = vecDot(r.direction, oc)
+'    c = vecDot(oc, oc) - radius * radius
+'    discriminant = h * h - a * c
+'
+'    ' WHAT ARE WE EVEN RETURNING ANYMORE
+'    If discriminant < 0 Then
+'        hit_sphere = -1#
+'    Else
+'        hit_sphere = (h - Sqr(CDbl(discriminant))) / a
+'    End If
+'End Function
 
 
 
-Private Function ray_color(r As ray) As vec3
-    t = hit_sphere(vec3(0, 0, -1), 0.5, r)
-    
-    If t > 0 Then
-        Dim N As New vec3
-        Set N = vecSubVec(r.at(t), vec3(0, 0, -1)).normalize()
-        Set ray_color = vecMul(vec3(N.x + 1, N.y + 1, N.z + 1), 0.5)
+Private Function ray_color(r As ray, ByVal world) As vec3
+    Dim rec As New hit_record
+    If world.hit(r, 0, infinity(), rec) Then
+        Set ray_color = vecMul(vecAddVec(rec.normal, vec3(1, 1, 1)), 0.5)
         Exit Function
     End If
+    
+    't = hit_sphere(vec3(0, 0, -1), 0.5, r)
+    
+    'If t > 0 Then
+    '    Dim N As New vec3
+    '    Set N = vecSubVec(r.at(t), vec3(0, 0, -1)).normalize()
+    '    Set ray_color = vecMul(vec3(N.x + 1, N.y + 1, N.z + 1), 0.5)
+    '    Exit Function
+    'End If
     
     
     ' Let's make a little gradient!
@@ -61,7 +68,11 @@ End Function
 
 
 ' "We have int main() at home"
-Private Sub Class_Initialize()
+Public Sub main()
+    Debug.Print
+    Dim currentTime
+    currentTime = Now
+    
     aspect = 15 / 9
     image_width = 400
     
@@ -73,10 +84,20 @@ Private Sub Class_Initialize()
     Window.paintBox.Width = image_width * 15
     Window.paintBox.Height = image_height * 15
     
+    Debug.Assert image_height > 5
+    
     ' Makes the progress bar work, ignore.
     ' Requires image_width and image_height to work.
     Window.renderProgress.Max = (image_width + 1) * (image_height + 1)
     Window.renderProgress.Value = 0
+    
+    
+    ' World Settings
+    
+    Dim world As New hittable_list
+    
+    world.add sphere(vec3(0, 0, -1), 0.5)
+    world.add sphere(vec3(0, -100.5, -1), 100)
     
     
     ' Camera Settings
@@ -132,7 +153,7 @@ Private Sub Class_Initialize()
             Set r = ray(camera_center, ray_dir) ' MAKE! THE! RAY!
             
             ' get color from ray
-            Set pixelColor = ray_color(r)
+            Set pixelColor = ray_color(r, world)
             
             ' This allows Windows to run required routines so that the
             ' window doesn't freeze during rendering. It also refreshes the
@@ -152,101 +173,68 @@ Private Sub Class_Initialize()
     
     ' Visually show the progressbar as full when done rendering
     Window.renderProgress.Value = Window.renderProgress.Max
+    
+    Dim newCurrentTime
+    newCurrentTime = Now
+    Debug.Print (Format(newCurrentTime - currentTime, "hh:mm:ss"))
 End Sub
 
 
 
-' Return the larger value.
-Private Function Max(val1, val2)
-    If val1 > val2 Then
-        Max = val1
-    Else
-        Max = val2
-    End If
-End Function
-
-
-
-' Return the smaller value.
-Private Function Min(val1, val2)
-    If val1 < val2 Then
-        Min = val1
-    Else
-        Min = val2
-    End If
-End Function
-
-
-
-Private Function vec3(x, y, z) As vec3
-    Dim temp As New vec3
-    temp.x = CDbl(x)
-    temp.y = CDbl(y)
-    temp.z = CDbl(z)
-    Set vec3 = temp
-End Function
-
-
-
-Private Function point3(x As Double, y As Double, z As Double) As vec3
-    Dim temp As New vec3
-    temp.x = x
-    temp.y = y
-    temp.z = z
-    Set point3 = temp
-End Function
-
-
-
-Private Function ray(origin As vec3, dir As vec3) As ray
-    Dim temp As New ray
-    Set temp.origin = origin
-    Set temp.direction = dir
-    Set ray = temp
-End Function
-
-
-
-Private Function vecAddVec(v1 As vec3, v2 As vec3) As vec3
-    Set vecAddVec = v1.addvec(v2)
-End Function
-
-
-
-Private Function vecSubVec(v1 As vec3, v2 As vec3) As vec3
-    Set vecSubVec = v1.subvec(v2)
-End Function
-
-
-
-Private Function vecMul(v1 As vec3, t) As vec3
-    Set vecMul = v1.mul(CDbl(t))
-End Function
-
-
-
-Private Function vecDiv(v1 As vec3, t) As vec3
-    Set vecDiv = v1.div(CDbl(t))
-End Function
-
-
-
-Private Function vecDot(v1 As vec3, v2 As vec3) As Double
-    vecDot = v1.dot(v2)
-End Function
-
-
-
-Private Function vecMulVec(v1 As vec3, v2 As vec3) As vec3
-    Set vecMulVec = v1.mulvec(v2)
-End Function
-
-
-
-Private Function gamma2(color As Double)
-    'gamma2 = Sqr(color) ' Gamma 2.0? What? I dunno.
+Public Sub branchlessMaxProfiler()
     
-    ' what would happen if i just multiplied by a fraction?
+    Randomize (Second(Now))
     
-    gamma2 = color * 0.75
-End Function
+    
+    Debug.Print ("Running profiler for standard test...")
+    
+    Dim tStart As Double, tEnd As Double
+    Dim totalMax As Double
+    Dim countMax As Long
+    
+    
+    Dim TBT
+    TBT = Now
+    totalMax = 0: countMax = 0
+    
+    For i = 0 To 5000000
+        tStart = PerfNow
+    
+        temp = Max_BT(Rnd() * 500, Rnd() * 500)
+        
+        tEnd = PerfNow
+        totalMax = totalMax + (tEnd - tStart)
+        countMax = countMax + 1
+    Next
+    
+    Dim TAT
+    TAT = Now
+    Debug.Print ("Time for 5m Max")
+    Debug.Print (Format(TAT - TBT, "hh:mm:ss"))
+    Debug.Print "Max avg (ms):"; Format((totalMax / countMax) * 1000, "0.00 ms")
+    Debug.Print "Avg (탎): " & Format((totalMax / countMax) * 1000000, "0.00 탎")
+    
+    
+    Debug.Print ("Running profiler for branchless test...")
+    
+    
+    TBT = Now
+    totalMax = 0: countMax = 0
+    
+    For i = 0 To 5000000
+        tStart = PerfNow
+    
+        temp = Max(Rnd() * 500, Rnd() * 500)
+        
+        tEnd = PerfNow
+        totalMax = totalMax + (tEnd - tStart)
+        countMax = countMax + 1
+    Next
+    
+    TAT = Now
+    Debug.Print ("Time for 5m Branchless Max")
+    Debug.Print (Format(TAT - TBT, "hh:mm:ss"))
+    Debug.Print "Max avg (ms):"; Format((totalMax / countMax) * 1000, "0.00 ms")
+    Debug.Print "Avg (탎): " & Format((totalMax / countMax) * 1000000, "0.00 탎")
+    
+End Sub
