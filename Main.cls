@@ -81,8 +81,8 @@ Public Sub main()
     image_height = Int(image_width / aspect)
     image_height = Max(image_height, 1)
     
-    Window.paintBox.Width = image_width * 15
-    Window.paintBox.Height = image_height * 15
+    Window.paintBox.Width = (image_width * 15) + 32
+    Window.paintBox.Height = (image_height * 15) + 32
     
     Debug.Assert image_height > 5
     
@@ -98,6 +98,8 @@ Public Sub main()
     
     world.add sphere(vec3(0, 0, -1), 0.5)
     world.add sphere(vec3(0, -100.5, -1), 100)
+    world.add sphere(vec3(1, 0, -1.5), 0.5)
+    world.add sphere(vec3(-1, 0, -1.5), 0.5)
     
     
     ' Camera Settings

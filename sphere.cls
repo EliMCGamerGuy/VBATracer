@@ -48,7 +48,7 @@ End Property
 
 
 
-Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, rec As hit_record) As Boolean
+Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, ByRef rec As hit_record) As Boolean
     Me.radius = CDbl(Max(0, Me.radius))
         
     Dim oc As New vec3
@@ -73,6 +73,7 @@ Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, rec As hit
         Root = (h + sqrtd) / a
         If (Root <= ray_tmin) Or (ray_tmax <= Root) Then
             hit = False
+            Exit Function
         End If
     End If
     
@@ -81,6 +82,7 @@ Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, rec As hit
     Set rec.normal = vecDiv(vecSubVec(rec.p, Me.center), Me.radius)
     Dim outward_normal As vec3
     Set outward_normal = vecDiv(vecSubVec(rec.p, Me.center), Me.radius)
+    rec.set_face_normal r, outward_normal
     
     hit = True
 End Function

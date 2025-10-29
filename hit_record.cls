@@ -81,7 +81,7 @@ Public Sub set_face_normal(r As ray, outward_normal As vec3)
     ' NOTE: the parameter 'outward_normal' is assumed to be normalized.
     
     Me.front_face = vecDot(r.direction, outward_normal) < 0
-    If front_face Then Set Me.normal = outward_normal Else Set Me.normal = mulvec(outward_normal, -1)
+    If front_face Then Set Me.normal = outward_normal Else Set Me.normal = vecMul(outward_normal, -1)
 End Sub
 
 

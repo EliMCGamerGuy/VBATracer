@@ -59,7 +59,7 @@ Private Sub Form_Resize()
     ' window hight 4725
     ' window width 7575
     
-    paintBox.Height = Window.Height - 585
+    paintBox.Height = Max(Window.Height - 585, 1)
     paintBox.Width = Window.Width - 120
     
 End Sub
