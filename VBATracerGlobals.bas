@@ -1,26 +1,26 @@
 Attribute VB_Name = "VBATracerGlobals"
 ' Return the larger value.
 Function Max(val1, val2)
-    'If val1 > val2 Then
-    '    Max = val1
-    'Else
-    '    Max = val2
-    'End If
+    If val1 > val2 Then
+        Max = val1
+    Else
+        Max = val2
+    End If
     
-    Max = val2 * -(val1 < val2) + val1 * -(val2 <= val1)
+    'Max = val2 * -(val1 < val2) + val1 * -(val2 <= val1)
 End Function
 
 
 
 ' Return the smaller value.
 Function Min(val1, val2)
-    'If val1 < val2 Then
-    '    Min = val1
-    'Else
-    '    Min = val2
-    'End If
+    If val1 < val2 Then
+        Min = val1
+    Else
+        Min = val2
+    End If
     
-    Min = val1 * -(val1 < val2) + val2 * -(val2 <= val1)
+    'Min = val1 * -(val1 < val2) + val2 * -(val2 <= val1)
 End Function
 
 
