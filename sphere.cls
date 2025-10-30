@@ -50,7 +50,7 @@ End Property
 
 Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, ByRef rec As hit_record) As Boolean
     ' there's a point at which coding just turns into straight up wizardry
-    Me.radius = CDbl(Max(0, Me.radius))
+    Me.radius = CDbl(max(0, Me.radius))
         
     Dim oc As New vec3
     Set oc = vecSubVec(center, r.origin)

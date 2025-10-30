@@ -14,6 +14,7 @@ Class=sphere; sphere.cls
 Module=VBATracerGlobals; VBATracerGlobals.bas
 Class=hittable_list; hittable_list.cls
 Module=AdvancedProfiler; AdvancedProfiler.bas
+Class=interval; interval.cls
 IconForm="Window"
 Startup="Window"
 HelpFile=""

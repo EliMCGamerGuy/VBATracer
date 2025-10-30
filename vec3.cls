@@ -96,13 +96,13 @@ Public Function convToRGB(Optional enableDither As Variant = False, Optional scr
     tempg = 255 * tempg
     tempb = 255 * tempb
     
-    tempr = Min(tempr, 255)
-    tempg = Min(tempg, 255)
-    tempb = Min(tempb, 255)
+    tempr = min(tempr, 255)
+    tempg = min(tempg, 255)
+    tempb = min(tempb, 255)
     
-    tempr = Max(tempr, 0)
-    tempg = Max(tempg, 0)
-    tempb = Max(tempb, 0)
+    tempr = max(tempr, 0)
+    tempg = max(tempg, 0)
+    tempb = max(tempb, 0)
     
     convToRGB = RGB(tempr, tempg, tempb)
 End Function
@@ -141,22 +141,22 @@ End Function
 
 
 ' Return the larger value.
-Private Function Max(val1, val2)
+Private Function max(val1, val2)
     If val1 > val2 Then
-        Max = val1
+        max = val1
     Else
-        Max = val2
+        max = val2
     End If
 End Function
 
 
 
 ' Return the smaller value.
-Private Function Min(val1, val2)
+Private Function min(val1, val2)
     If val1 < val2 Then
-        Min = val1
+        min = val1
     Else
-        Min = val2
+        min = val2
     End If
 End Function
 

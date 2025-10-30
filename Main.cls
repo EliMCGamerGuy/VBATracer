@@ -70,7 +70,7 @@ Public Sub main()
     ' Get image height based on aspect, and make sure it's >= 1
     Dim image_height As Integer
     image_height = Int(image_width / aspect)
-    image_height = Max(image_height, 1)
+    image_height = max(image_height, 1)
     
     Window.paintBox.Width = (image_width * 15) + 32
     Window.paintBox.Height = (image_height * 15) + 32
@@ -79,7 +79,7 @@ Public Sub main()
     
     ' Makes the progress bar work, ignore.
     ' Requires image_width and image_height to work.
-    Window.renderProgress.Max = (image_width + 1) * (image_height + 1)
+    Window.renderProgress.max = (image_width + 1) * (image_height + 1)
     Window.renderProgress.Value = 0
     
     
@@ -165,7 +165,7 @@ Public Sub main()
     Next j
     
     ' Visually show the progressbar as full when done rendering
-    Window.renderProgress.Value = Window.renderProgress.Max
+    Window.renderProgress.Value = Window.renderProgress.max
     
     Dim newCurrentTime
     newCurrentTime = Now
@@ -217,7 +217,7 @@ Public Sub branchlessMaxProfiler()
     For i = 0 To 5000000
         tStart = PerfNow
     
-        temp = Max(Rnd() * 500, Rnd() * 500)
+        temp = max(Rnd() * 500, Rnd() * 500)
         
         tEnd = PerfNow
         totalMax = totalMax + (tEnd - tStart)

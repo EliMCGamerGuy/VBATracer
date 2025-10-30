@@ -1,10 +1,10 @@
 Attribute VB_Name = "VBATracerGlobals"
 ' Return the larger value.
-Function Max(val1, val2)
+Function max(val1, val2)
     If val1 > val2 Then
-        Max = val1
+        max = val1
     Else
-        Max = val2
+        max = val2
     End If
     
     'Max = val2 * -(val1 < val2) + val1 * -(val2 <= val1)
@@ -13,11 +13,11 @@ End Function
 
 
 ' Return the smaller value.
-Function Min(val1, val2)
+Function min(val1, val2)
     If val1 < val2 Then
-        Min = val1
+        min = val1
     Else
-        Min = val2
+        min = val2
     End If
     
     'Min = val1 * -(val1 < val2) + val2 * -(val2 <= val1)
@@ -156,5 +156,30 @@ End Function
 
 Function degrees_to_radian(degrees)
     degrees_to_radian = CDbl(degrees) * pi() / 180#
+End Function
+
+
+
+Function interval(min, max) As interval
+    Dim temp As New interval
+    temp.min = CDbl(min)
+    temp.max = CDbl(max)
+    interval = temp
+End Function
+
+
+
+Function universe() As interval
+    Dim temp As New interval
+    Set temp = interval(-infinity(), infinity())
+    universe = temp
+End Function
+
+
+
+Function emptyInterval() As interval
+    Dim temp As New interval
+    Set temp = interval(infinity(), -infinity())
+    emptyInterval = temp
 End Function
 
