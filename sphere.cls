@@ -49,6 +49,7 @@ End Property
 
 
 Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, ByRef rec As hit_record) As Boolean
+    ' there's a point at which coding just turns into straight up wizardry
     Me.radius = CDbl(Max(0, Me.radius))
         
     Dim oc As New vec3
@@ -68,6 +69,7 @@ Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, ByRef rec 
     sqrtd = Sqr(discriminant)
     
     ' Find the nearest root that lies in the acceptable range.
+    Dim Root As Double
     Root = (h - sqrtd) / a
     If (Root <= ray_tmin) Or (ray_tmax <= Root) Then
         Root = (h + sqrtd) / a
@@ -78,12 +80,13 @@ Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, ByRef rec 
     End If
     
     rec.t = Root
-    Set rec.p = r.at(t)
+    Set rec.p = r.at(rec.t)
     Set rec.normal = vecDiv(vecSubVec(rec.p, Me.center), Me.radius)
-    Dim outward_normal As vec3
+    Dim outward_normal As New vec3
     Set outward_normal = vecDiv(vecSubVec(rec.p, Me.center), Me.radius)
     rec.set_face_normal r, outward_normal
     
     hit = True
+    ' with sphere.hit(), i think we passed that point
 End Function
 

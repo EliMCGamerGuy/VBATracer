@@ -43,7 +43,7 @@ End Property
 
 
 
-Public Function hit(r As ray, ray_tmin, ray_tmax, rec As hit_record) As Boolean
+Public Function hit(r As ray, ray_tmin, ray_tmax, ByRef rec As hit_record) As Boolean
     Dim temp_rec As New hit_record
     Dim hit_anything
     hit_anything = False

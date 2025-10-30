@@ -40,15 +40,6 @@ Private Function ray_color(r As ray, ByVal world) As vec3
         Exit Function
     End If
     
-    't = hit_sphere(vec3(0, 0, -1), 0.5, r)
-    
-    'If t > 0 Then
-    '    Dim N As New vec3
-    '    Set N = vecSubVec(r.at(t), vec3(0, 0, -1)).normalize()
-    '    Set ray_color = vecMul(vec3(N.x + 1, N.y + 1, N.z + 1), 0.5)
-    '    Exit Function
-    'End If
-    
     
     ' Let's make a little gradient!
     Dim unit_dir As New vec3
@@ -160,7 +151,7 @@ Public Sub main()
             ' This allows Windows to run required routines so that the
             ' window doesn't freeze during rendering. It also refreshes the
             ' render box and progressbar, so it's rather useful.
-            If i Mod 128 = 0 Then
+            If i = 0 Then
                 DoEvents
             End If
             

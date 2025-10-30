@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
-'Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, rec As hit_record) As Boolean
+'Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, rec As hit_record) As Boolean
 '    hit = False
 'End Function
 
