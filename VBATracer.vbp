@@ -15,6 +15,7 @@ Module=VBATracerGlobals; VBATracerGlobals.bas
 Class=hittable_list; hittable_list.cls
 Module=AdvancedProfiler; AdvancedProfiler.bas
 Class=interval; interval.cls
+Class=camera; camera.cls
 IconForm="Window"
 Startup="Window"
 HelpFile=""

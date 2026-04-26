@@ -48,7 +48,7 @@ End Property
 
 
 
-Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, ByRef rec As hit_record) As Boolean
+Public Function hit(r As ray, ray_t As interval, ByRef rec As hit_record) As Boolean
     ' there's a point at which coding just turns into straight up wizardry
     Me.radius = CDbl(max(0, Me.radius))
         
@@ -71,9 +71,9 @@ Public Function hit(r As ray, ray_tmin As Double, ray_tmax As Double, ByRef rec 
     ' Find the nearest root that lies in the acceptable range.
     Dim Root As Double
     Root = (h - sqrtd) / a
-    If (Root <= ray_tmin) Or (ray_tmax <= Root) Then
+    If Not ray_t.surrounds(Root) Then
         Root = (h + sqrtd) / a
-        If (Root <= ray_tmin) Or (ray_tmax <= Root) Then
+        If Not ray_t.surrounds(Root) Then
             hit = False
             Exit Function
         End If

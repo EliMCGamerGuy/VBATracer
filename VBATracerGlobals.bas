@@ -164,7 +164,7 @@ Function interval(min, max) As interval
     Dim temp As New interval
     temp.min = CDbl(min)
     temp.max = CDbl(max)
-    interval = temp
+    Set interval = temp
 End Function
 
 
@@ -172,7 +172,7 @@ End Function
 Function universe() As interval
     Dim temp As New interval
     Set temp = interval(-infinity(), infinity())
-    universe = temp
+    Set universe = temp
 End Function
 
 
@@ -180,6 +180,6 @@ End Function
 Function emptyInterval() As interval
     Dim temp As New interval
     Set temp = interval(infinity(), -infinity())
-    emptyInterval = temp
+    Set emptyInterval = temp
 End Function
 

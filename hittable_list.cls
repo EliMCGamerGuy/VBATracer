@@ -43,14 +43,14 @@ End Property
 
 
 
-Public Function hit(r As ray, ray_tmin, ray_tmax, ByRef rec As hit_record) As Boolean
+Public Function hit(r As ray, ray_t As interval, ByRef rec As hit_record) As Boolean
     Dim temp_rec As New hit_record
     Dim hit_anything
     hit_anything = False
-    closest_so_far = CDbl(ray_tmax)
+    closest_so_far = ray_t.max
     
     For Each objKey In Me.objects.Keys
-        If Me.objects(objKey).hit(r, CDbl(ray_tmin), CDbl(closest_so_far), temp_rec) Then
+        If Me.objects(objKey).hit(r, interval(ray_t.min, closest_so_far), temp_rec) Then
             hit_anything = True
             closest_so_far = temp_rec.t
             Set rec = temp_rec

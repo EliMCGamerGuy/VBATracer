@@ -34,53 +34,17 @@ Attribute VB_Ext_KEY = "Member0" ,"main"
 
 
 Private Function ray_color(r As ray, ByVal world) As vec3
-    Dim rec As New hit_record
-    If world.hit(r, 0, infinity(), rec) Then
-        Set ray_color = vecMul(vecAddVec(rec.normal, vec3(1, 1, 1)), 0.5)
-        Exit Function
-    End If
-    
-    
-    ' Let's make a little gradient!
-    Dim unit_dir As New vec3
-    Set unit_dir = r.direction.normalize()
-    
-    'Debug.Print "r pos x" & CStr(r.origin.x) & " y" & CStr(r.origin.y) & " z" & CStr(r.origin.z)
-    'Debug.Print "r dir x" & CStr(r.direction.x) & " y" & CStr(r.direction.y) & " z" & CStr(r.direction.z)
-    'Debug.Print "unit dir x" & CStr(unit_dir.x) & " y" & CStr(unit_dir.y) & " z" & CStr(unit_dir.z)
-    
-    
-    a = 0.5 * (unit_dir.y + 1)
-    Set ray_color = vecAddVec(vecMul(vec3(1, 1, 1), (1 - a)), vecMul(vec3(0.5, 0.7, 1), a))
-    ' vec3(1,1,1) * (1.0 - a) + vec3(0.5,0.7,1) * a
-    ' it's a little sloppy but it works
 End Function
 
 
 
 ' "We have int main() at home"
 Public Sub main()
-    Debug.Print
-    Dim currentTime
-    currentTime = Now
     
-    aspect = 15 / 9
-    image_width = 400
-    
-    ' Get image height based on aspect, and make sure it's >= 1
-    Dim image_height As Integer
-    image_height = Int(image_width / aspect)
-    image_height = max(image_height, 1)
-    
-    Window.paintBox.Width = (image_width * 15) + 32
-    Window.paintBox.Height = (image_height * 15) + 32
-    
-    Debug.Assert image_height > 5
-    
-    ' Makes the progress bar work, ignore.
-    ' Requires image_width and image_height to work.
-    Window.renderProgress.max = (image_width + 1) * (image_height + 1)
-    Window.renderProgress.Value = 0
+    'aspect = 15 / 9
+    'image_width = 400
+    'image_height = Int(image_width / aspect)
+    'image_height = max(image_height, 1)
     
     
     ' World Settings
@@ -93,83 +57,92 @@ Public Sub main()
     world.add sphere(vec3(-1, 0, -1.5), 0.5)
     
     
+    ' Create the camera
+    Dim cam As New camera
+    
+    
     ' Camera Settings
     
-    focal_length = 1
-    viewport_height = 2
-    viewport_width = viewport_height * (image_width / image_height)
-    Dim camera_center As New vec3
-    Set camera_center = point3(0, 0, 0)
+    cam.aspect_ratio = 16 / 9
+    cam.image_width = 400
+    
+    
+    'focal_length = 1
+    'viewport_height = 2
+    'viewport_width = viewport_height * (image_width / image_height)
+    'Dim camera_center As New vec3
+    'Set camera_center = point3(0, 0, 0)
     
     
     ' Calculate vectors across horizontal and down vertical viewport sides.
-    Dim viewport_u As New vec3
-    Dim viewport_v As New vec3
-    Set viewport_u = vec3(viewport_width, 0, 0)
-    Set viewport_v = vec3(0, -viewport_height, 0)
+    'Dim viewport_u As New vec3
+    'Dim viewport_v As New vec3
+    'Set viewport_u = vec3(viewport_width, 0, 0)
+    'Set viewport_v = vec3(0, -viewport_height, 0)
     
     
     ' Calculate the horizontal and vertical delta vectors from pix to pix.
-    Dim pixel_delta_u As New vec3
-    Dim pixel_delta_v As New vec3
-    Set pixel_delta_u = vecDiv(viewport_u, image_width)
-    Set pixel_delta_v = vecDiv(viewport_v, image_height)
+    'Dim pixel_delta_u As New vec3
+    'Dim pixel_delta_v As New vec3
+    'Set pixel_delta_u = vecDiv(viewport_u, image_width)
+    'Set pixel_delta_v = vecDiv(viewport_v, image_height)
     
     
     ' Calculate the point3 location of the upper left pix.
     ' Are you ready?
-    Dim viewport_ul As New vec3
-    Dim pix00_loc As New vec3
-    Set viewport_ul = vecSubVec(vecSubVec(vecSubVec(camera_center, vec3(0, 0, focal_length)), vecDiv(viewport_u, 2)), vecDiv(viewport_v, 2))
+    'Dim viewport_ul As New vec3
+    'Dim pix00_loc As New vec3
+    'Set viewport_ul = vecSubVec(vecSubVec(vecSubVec(camera_center, vec3(0, 0, focal_length)), vecDiv(viewport_u, 2)), vecDiv(viewport_v, 2))
     ' viewport_ul = camera_center - vec3(0,0,focal_length) - viewport_u/2 - viewport_v/2
-    Set pix00_loc = vecAddVec(viewport_ul, vecMul(vecAddVec(pixel_delta_u, pixel_delta_v), 0.5))
+    'Set pix00_loc = vecAddVec(viewport_ul, vecMul(vecAddVec(pixel_delta_u, pixel_delta_v), 0.5))
     ' pix00_loc = viewport_ul + (pixel_delta_u + pixel_delta_v) * 0.5
     
     
     ' Render!
+    cam.render world
+    
     
     ' Variable setup.
-    Dim pixelColor As New vec3
-    Dim pix_center As New vec3
-    Dim ray_dir As New vec3
-    Dim r As New ray
+    'Dim pixelColor As New vec3
+    'Dim pix_center As New vec3
+    'Dim ray_dir As New vec3
+    'Dim r As New ray
     
-    
-    For j = 0 To image_height - 1 ' For every pixel
-        For i = 0 To image_width - 1
-        
-            Set pix_center = vecAddVec(pix00_loc, vecAddVec(vecMul(pixel_delta_u, i), vecMul(pixel_delta_v, j)))
-            ' pix_center = pix00_loc + (pixel_delta_u * i) + (pixel_delta_v * j)
-            
-            ' ray direction is the pixel's center minus the camera center, giving us dir
-            Set ray_dir = vecSubVec(pix_center, camera_center)
-            Set r = ray(camera_center, ray_dir) ' MAKE! THE! RAY!
-            
-            ' get color from ray
-            Set pixelColor = ray_color(r, world)
-            
-            ' This allows Windows to run required routines so that the
-            ' window doesn't freeze during rendering. It also refreshes the
-            ' render box and progressbar, so it's rather useful.
-            If i = 0 Then
-                DoEvents
-            End If
-            
-            
-            ' Paint the pixel to the render box.
-            Window.drawPixel i, j, (pixelColor.convToRGB(True, Int(i), Int(j))) ' / 2
-            
-            ' Quality of life progressbar. Shows render progress.
-            Window.renderProgress.Value = Window.renderProgress.Value + 1
-        Next i
-    Next j
-    
+    'For j = 0 To image_height - 1 ' For every pixel
+    '    For i = 0 To image_width - 1
+    '
+    '        Set pix_center = vecAddVec(pix00_loc, vecAddVec(vecMul(pixel_delta_u, i), vecMul(pixel_delta_v, j)))
+    '        ' pix_center = pix00_loc + (pixel_delta_u * i) + (pixel_delta_v * j)
+    '
+    '        ' ray direction is the pixel's center minus the camera center, giving us dir
+    '        Set ray_dir = vecSubVec(pix_center, camera_center)
+    '        Set r = ray(camera_center, ray_dir) ' MAKE! THE! RAY!
+    '
+    '        ' get color from ray
+    '        Set pixelColor = ray_color(r, world)
+    '
+    '        ' This allows Windows to run required routines so that the
+    '        ' window doesn't freeze during rendering. It also refreshes the
+    '        ' render box and progressbar, so it's rather useful.
+    '        If i = 0 Then
+    '            DoEvents
+    '        End If
+    '
+    '
+    '        ' Paint the pixel to the render box.
+    '        Window.drawPixel i, j, (pixelColor.convToRGB(True, Int(i), Int(j))) ' / 2
+    '
+    '        ' Quality of life progressbar. Shows render progress.
+    '        Window.renderProgress.Value = Window.renderProgress.Value + 1
+    '    Next i
+    'Next j
+    '
     ' Visually show the progressbar as full when done rendering
-    Window.renderProgress.Value = Window.renderProgress.max
-    
-    Dim newCurrentTime
-    newCurrentTime = Now
-    Debug.Print (Format(newCurrentTime - currentTime, "hh:mm:ss"))
+    'Window.renderProgress.Value = Window.renderProgress.max
+    '
+    'Dim newCurrentTime
+    'newCurrentTime = Now
+    'Debug.Print (Format(newCurrentTime - currentTime, "hh:mm:ss"))
 End Sub
 
 
